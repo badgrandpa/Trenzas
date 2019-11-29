@@ -1,0 +1,100 @@
+#include <CapacitiveSensor.h>
+
+
+CapacitiveSensor   cs_4_2 = CapacitiveSensor(4, 2); // 4 is green, 2 is orange
+CapacitiveSensor   cs_10_8 = CapacitiveSensor(10, 8); // 7 is red, 5 is grey
+
+
+// variables:
+long val01; // the sensor value
+long sensorMin01 = 1023; // minimum sensor value
+long sensorMax01 = 0; // maximum sensor value
+
+// variables:
+long val02; // the sensor value
+long sensorMin02 = 1023; // minimum sensor value
+long sensorMax02 = 0; // maximum sensor value
+
+
+int led01 = 13;
+int led02 = 12;
+
+
+void setup()
+{
+
+  Serial.begin(9600);
+
+
+
+  // --------------------------------------Setup for Sensor01 ---------------------------\\  
+  cs_10_8.set_CS_AutocaL_Millis(0xFFFFFFFF);     // turn off autocalibrate on channel 1 - just as an example
+
+  pinMode(led01, OUTPUT); //leds are great to test
+
+  digitalWrite(led01, HIGH);
+  //calibrate during the first seven seconds when board is turned on or reset
+  while (millis() < 10000) {
+    val01 = cs_4_2.capacitiveSensor(30); //sensor resolution (sensitivity)
+
+    //records maximum sensor value
+    if (val01 > sensorMax01) {
+      sensorMax01 = val01;
+    }
+    // does the same for minimum value
+    if (val01 < sensorMin01) {
+      sensorMin01 = val01;
+    }
+  }
+  digitalWrite(led01, LOW); //LEDs are so helpfull                // tab character for debug windown spacing
+
+
+
+
+
+  // ----------------------------------Setup for Sensor02 ------------------------------------\\  
+
+
+
+  cs_10_8.set_CS_AutocaL_Millis(0xFFFFFFFF);     // turn off autocalibrate on channel 1 - just as an example
+
+  pinMode(led02, OUTPUT); //leds are great to test
+
+  digitalWrite(led02, HIGH);
+  //calibrate during the first seven seconds when board is turned on or reset
+  while (millis() < 20000) {
+    val02 = cs_10_8.capacitiveSensor(30); //sensor resolution (sensitivity)
+
+    //records maximum sensor value
+    if (val02 > sensorMax02) {
+      sensorMax02 = val02;
+    }
+    // does the same for minimum value
+    if (val02 < sensorMin02) {
+      sensorMin02 = val02;
+    }
+  }
+  digitalWrite(led02, LOW); //LEDs are so helpfull                // tab character for debug windown spacing
+
+}
+
+void loop()
+{
+  long start = millis();
+
+  if (Serial.available() > 0) { // arduino waits to hear form processing
+
+    char input = Serial.read();
+    
+    val01 = cs_4_2.capacitiveSensor(30);
+    long touch01 = map(val01, sensorMin01, sensorMax01, 0, 255); //mapping
+    Serial.print(touch01);
+    Serial.print(",");
+    delay(1);
+
+    val02 = cs_10_8.capacitiveSensor(30);
+    long touch02 = map(val02, sensorMin02, sensorMax02, 0, 255); //mapping
+    Serial.println(touch02);
+
+  }
+}
