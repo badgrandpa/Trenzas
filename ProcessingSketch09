@@ -1,0 +1,108 @@
+
+
+// Serial Communication
+import processing.serial.*;
+Serial port;
+/*
+String arduinoInput;
+ String[] splitArduinoInput;
+ float[] newArduinoInput;
+ */
+
+// Minim Library
+import ddf.minim.*;
+import ddf.minim.ugens.*;
+Minim minim;
+Gain gain;
+AudioOutput out;
+AudioPlayer track01, track02;
+
+//sensor01, volume01
+float  volume01;
+float value01;
+
+//sensor02, volume02
+float  volume02;
+float value02;
+
+// volume Controlls
+int highVolume;
+int lowVolume;
+
+
+void setup() {
+
+  size(255, 255);
+
+  // Serial Communication Setup
+  String portName = "/dev/tty.usbmodem14101";
+  port = new Serial(this, portName, 9600);
+  port.bufferUntil('\n');
+  port.write('x');
+
+  // Minim Setup Sensor01
+  minim = new Minim(this); // importing minim to be able to use is
+  track01 = minim.loadFile("samba.mp3");
+  track01.play();
+  track01.loop();
+  // start the Gain at 0 dB, which means no change in amplitude
+  track01.setGain(-80);
+
+  // Minim Setup Sensor02
+  // minim02 = new Minim(this); // importing minim to be able to use is
+  track02 = minim.loadFile("salsa.mp3");
+  track02.play();
+  track02.loop();
+  // start the Gain at 0 dB, which means no change in amplitude
+  track02.setGain(-80);
+  
+  println("hello world");
+}
+
+void draw() {
+  background(0);
+
+  //Sensor Ellipse01
+  fill(255, 100, 150);
+  track01.setGain(volume01);
+  ellipse(volume01, 150, 20, 20);
+
+  //Sensor Ellipse02
+  fill(255, 0, 200);
+  track01.setGain(volume01);
+  ellipse(volume02, 300, 20, 20);
+}
+
+
+void serialEvent(Serial port) {
+
+    String arduinoInput = port.readString(); //converting to strings and then back to float
+    String[] splitArduinoInput = split(arduinoInput, ',');
+    value01 = Float.parseFloat(splitArduinoInput[0]);
+    value02 = Float.parseFloat(splitArduinoInput[1]);
+    
+   // float[] newArduinoInput = float (splitArduinoInput); 
+   // value01 = newArduinoInput[0];
+   // value02 = newArduinoInput[1];
+    //volume01 = map(newArduinoInput[0], 0, 255, -6, 6);
+    // volume02 = map(newArduinoInput[1], 0, 255, -6, 6);
+
+    println(arduinoInput);
+   
+    println(value01);
+    println(value02);
+
+    if (value01 >= 1) {
+      volume01 = 60 ;
+    } else {
+      volume01 = -80;
+    }
+
+    if (value02 >= 1) {
+      volume02 = 60 ;
+    } else {
+      volume02 = -80;
+    }
+
+    port.write('x');
+}
