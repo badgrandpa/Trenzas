@@ -6,6 +6,9 @@ Alesandra Miro Quesada
 
 End of Term project for Physical Computing module
 
+Video
+https://vimeo.com/388694965
+
 ------------------------
 
 Amor Serrano tells the story of domestic violence in the Andes. 
