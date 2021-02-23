@@ -1,4 +1,6 @@
-# Amor Serrano
+# No Me Jales el Pelo - Don′t Pull My Hair
+
+Interactive Installation
 
 Processing and Arduino communication to trigger sounds using a Capacitive Sensor. 
 
